@@ -6,7 +6,51 @@
         xmlns:local="clr-namespace:ChatWithChatGpt"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+  <Window.Resources>
+        <SolidColorBrush x:Key="MainBackgroundColor" Color="#FF161616"/>
+        <SolidColorBrush x:Key="MainForegroundColor" Color="#FFC8C8C8"/>
+        <SolidColorBrush x:Key="MainButtonBackgroundColor" Color="#FF0ED145"/>
+        <SolidColorBrush x:Key="MainButtonForegroundColor" Color="#FF161616"/>
+    </Window.Resources>
+    <Grid Background="{StaticResource MainBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
+        <!-- InputTranscriptionTextBox -->
+        <TextBox x:Name="InputTranscriptionTextBox" Margin="10" 
+                 Grid.Row="0" Width="500" Height="30" 
+                 HorizontalAlignment="Left" VerticalAlignment="Center" 
+                 Background="{StaticResource MainForegroundColor}" 
+                 Foreground="{StaticResource MainBackgroundColor}" 
+                 Text="Type your transcription here..." />
+
+        <!-- Record Button -->
+        <Button x:Name="RecordButton" Margin="10" 
+                Grid.Row="0" Width="100" Height="30" 
+                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                Background="{StaticResource MainButtonBackgroundColor}" 
+                Foreground="{StaticResource MainButtonForegroundColor}" 
+                Content="Record" 
+                MouseDown="RecordButton_MouseDown"
+                MouseUp="RecordButton_MouseUp"/>
+
+        <!-- Submit Button -->
+        <Button x:Name="SubmitButton" Margin="10" 
+                Grid.Row="1" Width="100" Height="30" 
+                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                Background="{StaticResource MainButtonBackgroundColor}" 
+                Foreground="{StaticResource MainButtonForegroundColor}" 
+                Content="Submit" />
+
+        <!-- ConversationTextBox -->
+        <TextBox x:Name="ConversationTextBox" Margin="10" 
+                 Grid.Row="2" Width="780" Height="150" 
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                 Background="{StaticResource MainForegroundColor}" 
+                 Foreground="{StaticResource MainBackgroundColor}" 
+                 IsReadOnly="True" TextWrapping="Wrap" />
     </Grid>
 </Window>
