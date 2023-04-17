@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,11 +33,15 @@ namespace ChatWithChatGpt
     {
         private readonly SpeechToTextClient _speechClient = new SpeechToTextClient();
         private readonly TextToSpeechClient _textToSpeechClient = new TextToSpeechClient();
+        private readonly GptClient _gptClient = new GptClient();
+        private MemoryStream _recordedAudioStream;
+
         string Input = "";
         string Conversation = "";
-        private WaveInEvent waveSource;
-        private WaveFileWriter waveFile;
-        private MemoryStream audioStream;
+
+        private WaveInEvent _waveIn;
+        private WaveFileWriter _waveFileWriter;
+
 
 
         public MainWindow()
@@ -45,62 +51,71 @@ namespace ChatWithChatGpt
 
         }
 
-
-
-
-        private Task<string> GetGPTResponse(string inputText)
+        private void StartRecordingButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-
-
-        private void RecordButton_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            waveSource = new WaveInEvent
+            if (_waveIn == null)
             {
-                WaveFormat = new WaveFormat(44100, 1)
-            };
+                _waveIn = new WaveInEvent();
+                _waveIn.DeviceNumber = 0; // Default microphone
+                _waveIn.WaveFormat = new WaveFormat(16000, 1); // 44.1 kHz sample rate, 1 channel (mono)
+                _waveIn.DataAvailable += OnDataAvailable;
+                _waveIn.RecordingStopped += OnRecordingStopped;
 
-            audioStream = new MemoryStream();
-            waveFile = new WaveFileWriter(audioStream, waveSource.WaveFormat);
+                _recordedAudioStream = new MemoryStream();
 
-            waveSource.DataAvailable += WaveSource_DataAvailable;
-            waveSource.RecordingStopped += WaveSource_RecordingStopped;
-
-            waveSource.StartRecording();
-        }
-
-        private void RecordButton_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            waveSource.StopRecording();
-
-        }
-
-        private void WaveSource_DataAvailable(object sender, WaveInEventArgs e)
-        {
-            if (waveFile != null)
-            {
-                waveFile.Write(e.Buffer, 0, e.BytesRecorded);
-                waveFile.Flush();
+                _waveIn.StartRecording();
             }
         }
 
-        private async void WaveSource_RecordingStopped(object sender, StoppedEventArgs e)
+        private void OnDataAvailable(object sender, WaveInEventArgs e)
         {
-            if (audioStream != null)
+            if (_recordedAudioStream != null)
             {
-                string transcript = await SpeechToTextClient.ConvertSpeechToText(audioStream);
+                _recordedAudioStream.Write(e.Buffer, 0, e.BytesRecorded);
+            }
+        }
 
-                // Do something with the transcript, e.g., display it or save it to a file
-                // ...
-
-                audioStream.Dispose();
-                audioStream = null;
+        private void OnRecordingStopped(object sender, StoppedEventArgs e)
+        {
+            if (_waveIn != null)
+            {
+                _waveIn.Dispose();
+                _waveIn = null;
             }
 
+            if (_recordedAudioStream != null)
+            {
+                // Reset the position of the stream to the beginning before passing it to ConvertSpeechToText
+                _recordedAudioStream.Position = 0;
 
+                // Assuming _speechClient.ConvertSpeechToText() is an async method
+                string result =  _speechClient.ConvertSpeechToText(_recordedAudioStream);
 
+                // Do something with the result (e.g., display it in the ConversationTextBox)
+                ConversationTextBox.AppendText($"You said: {result}\n");
+
+                // Dispose of the MemoryStream and set it to null
+                _recordedAudioStream.Dispose();
+                _recordedAudioStream = null;
+            }
+        }
+
+        private void StopRecordingButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_waveIn != null)
+            {
+                _waveIn.StopRecording();
+            }
+        }
+
+        private void SendToGptButton_Click(object sender, RoutedEventArgs e)
+        {
+            string conversationText = ConversationTextBox.Text;
+            string gptResponse = this._gptClient.SendToGpt4(conversationText);
+            // Display the GPT response in the ConversationTextBox
+            ConversationTextBox.Text += "GPT: " + gptResponse + Environment.NewLine;
         }
     }
+
+
 }
