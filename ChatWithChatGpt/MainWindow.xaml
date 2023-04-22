@@ -16,23 +16,34 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
         <!-- InputTranscriptionTextBox -->
         <TextBox x:Name="InputTranscriptionTextBox" Margin="10" 
-                 Grid.Row="0" Width="500" Height="30" 
+                 Grid.Row="1" Width="500" Height="30" 
+                 Grid.ColumnSpan="3"
                  HorizontalAlignment="Left" VerticalAlignment="Center" 
                  Background="{StaticResource MainForegroundColor}" 
                  Foreground="{StaticResource MainBackgroundColor}" 
-                 Text="Type your transcription here..." />
-
+                 Text="Type your transcription here..."  />
+        
+        <StackPanel Orientation="Horizontal" x:Name="RecordingButtonContainer"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3">
+            
         <!-- Start Recording Button -->
         <Button x:Name="StartRecordingButton" Margin="10,10,10,10" 
-                Grid.Row="1" Width="100" Height="30" 
+                Grid.Row="0" Width="100" Height="30"
+                Grid.Column="0"
                 
-                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                HorizontalAlignment="Left" VerticalAlignment="Center" 
                 Background="{StaticResource MainButtonBackgroundColor}" 
                 Foreground="{StaticResource MainButtonForegroundColor}" 
                 Content="Start Recording" 
@@ -40,17 +51,18 @@
 
         <!-- Stop Recording Button -->
         <Button x:Name="StopRecordingButton" Margin="10" 
-                Grid.Row="2" Width="100" Height="30" 
-                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                Grid.Row="0" Grid.Column="0" Width="100" Height="30" 
+                HorizontalAlignment="Left" VerticalAlignment="Center" 
                 Background="{StaticResource MainButtonBackgroundColor}" 
                 Foreground="{StaticResource MainButtonForegroundColor}" 
                 Content="Stop Recording"
                 Click="StopRecordingButton_Click"/>
+        </StackPanel>
 
         <!-- Send to GPT Button -->
         <Button x:Name="SendToGptButton" Margin="10" 
-        Grid.Row="1" Width="100" Height="30" 
-        HorizontalAlignment="Left" VerticalAlignment="Center" 
+        Grid.Row="2" Width="100" Height="30" 
+        HorizontalAlignment="Left" VerticalAlignment="Top" 
         Background="{StaticResource MainButtonBackgroundColor}" 
         Foreground="{StaticResource MainButtonForegroundColor}" 
         Content="Send to GPT" 
@@ -60,7 +72,7 @@
         <!-- ConversationTextBox -->
         <TextBox x:Name="ConversationTextBox" Margin="10" 
                  Grid.Row="3" Width="780" Height="150" 
-                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                 HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                  Background="{StaticResource MainForegroundColor}" 
                  Foreground="{StaticResource MainBackgroundColor}" 
                  IsReadOnly="True" TextWrapping="Wrap" />

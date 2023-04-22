@@ -92,7 +92,8 @@ namespace ChatWithChatGpt
                 string result =  _speechClient.ConvertSpeechToText(_recordedAudioStream);
 
                 // Do something with the result (e.g., display it in the ConversationTextBox)
-                ConversationTextBox.AppendText($"You said: {result}\n");
+                this.InputTranscriptionTextBox.Clear();
+                this.InputTranscriptionTextBox.AppendText(result);
 
                 // Dispose of the MemoryStream and set it to null
                 _recordedAudioStream.Dispose();
@@ -110,9 +111,12 @@ namespace ChatWithChatGpt
 
         private void SendToGptButton_Click(object sender, RoutedEventArgs e)
         {
-            string conversationText = ConversationTextBox.Text;
-            string gptResponse = this._gptClient.SendToGpt4(conversationText);
+            string conversationText = this.InputTranscriptionTextBox.Text;
+            string gptResponse = this._gptClient.ContinueConversation(conversationText);
+            //string gptResponse = this._gptClient.SendToGpt(conversationText);
             // Display the GPT response in the ConversationTextBox
+            ConversationTextBox.Text += "You Said: "+ this.InputTranscriptionTextBox.Text;
+            this.InputTranscriptionTextBox.Clear();
             ConversationTextBox.Text += "GPT: " + gptResponse + Environment.NewLine;
         }
     }
