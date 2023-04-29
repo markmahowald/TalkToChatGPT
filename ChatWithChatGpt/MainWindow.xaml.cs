@@ -21,8 +21,11 @@ using Google.Cloud.Speech.V1;
 using Google.Cloud.TextToSpeech.V1;
 using Google.Protobuf;
 using NAudio.Wave;
-
-
+using Microsoft.Win32;
+using System.Windows.Forms;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ChatWithChatGpt
 {
@@ -35,20 +38,19 @@ namespace ChatWithChatGpt
         private readonly TextToSpeechClient _textToSpeechClient = new TextToSpeechClient();
         private readonly GptClient _gptClient = new GptClient();
         private MemoryStream _recordedAudioStream;
-
-        string Input = "";
-        string Conversation = "";
-
         private WaveInEvent _waveIn;
         private WaveFileWriter _waveFileWriter;
 
+        //todo: encase things in try/catch/log blocks
+        //todo: implement logging
+        //todo: implement saving a conversation for later. 
 
 
         public MainWindow()
         {
             InitializeComponent();
-
-
+            this.WindowState = WindowState.Maximized;
+            this.StartNewConversation();
         }
 
         private void StartRecordingButton_Click(object sender, RoutedEventArgs e)
@@ -109,15 +111,88 @@ namespace ChatWithChatGpt
             }
         }
 
-        private void SendToGptButton_Click(object sender, RoutedEventArgs e)
+        private async void SendToGptButton_Click(object sender, RoutedEventArgs e)
         {
             string conversationText = this.InputTranscriptionTextBox.Text;
             string gptResponse = this._gptClient.ContinueConversation(conversationText);
             //string gptResponse = this._gptClient.SendToGpt(conversationText);
             // Display the GPT response in the ConversationTextBox
-            ConversationTextBox.Text += "You Said: "+ this.InputTranscriptionTextBox.Text;
+            ConversationTextBox.Text += "You Said: "+ this.InputTranscriptionTextBox.Text+"\n";
             this.InputTranscriptionTextBox.Clear();
-            ConversationTextBox.Text += "GPT: " + gptResponse + Environment.NewLine;
+            ConversationTextBox.Text += "GPT Said: " + gptResponse + Environment.NewLine;
+            this._textToSpeechClient.PlayAudioStream( await this._textToSpeechClient.ConvertTextToSpeech(gptResponse));
+        }
+
+        private void NewConversationButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.StartNewConversation();
+        }
+
+        private async void StartNewConversation()
+        {
+            var newChatDialog = new NewConversationMessageBox();
+            newChatDialog.ShowDialog();
+           
+            var role = newChatDialog.InputTextBox.Text;
+            this.ConversationTextBox.Clear();
+            this.InputTranscriptionTextBox.Clear();
+            this.InputTranscriptionTextBox.Text = "Type your transcription here...";
+            var response = this._gptClient.StartNewConversation(role);
+            ConversationTextBox.Text += "GPT's role: "+role+"\nGPT: " + response + Environment.NewLine;
+            this._textToSpeechClient.PlayAudioStream(await this._textToSpeechClient.ConvertTextToSpeech(response));
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.StartNewConversation();
+        }
+
+        private void SaveConversationButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                this._gptClient.SaveConversation( saveFileDialog.FileName);
+            }
+        }
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                var oldConvo = this._gptClient.LoadConversation( openFileDialog.FileName );
+                if (oldConvo is not null)
+                {
+                    this.ConversationTextBox.Clear();
+                    this.InputTranscriptionTextBox.Clear();
+                    string history = "";
+                    foreach (var message in oldConvo)
+                    {
+                        string speaker = (message.Item1 == "Assistant" ? "GPT Said" : "You Said: ");
+                        history += (speaker + message.Item2+"\n");
+                    }
+                    this.ConversationTextBox.Text = history; 
+                }
+                else
+                {
+                    MessageBox.Show("Error loading conversation");
+                }
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 
