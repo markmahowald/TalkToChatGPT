@@ -5,8 +5,101 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatWithChatGpt"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="450" Width="800"
+        Closed="Window_Closed">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MainBackgroundColor" Color="#FF161616"/>
+        <SolidColorBrush x:Key="MainForegroundColor" Color="#FFC8C8C8"/>
+        <SolidColorBrush x:Key="MainButtonBackgroundColor" Color="#FF0ED145"/>
+        <SolidColorBrush x:Key="MainButtonForegroundColor" Color="#FF161616"/>
+    </Window.Resources>
+    <Grid Background="{StaticResource MainBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <!-- InputTranscriptionTextBox -->
+        <TextBox x:Name="InputTranscriptionTextBox" Margin="10" 
+                 Grid.Row="1" Width="500"  
+                 Grid.ColumnSpan="3"
+                 HorizontalAlignment="Left" VerticalAlignment="Center" 
+                 Background="{StaticResource MainForegroundColor}" 
+                 Foreground="{StaticResource MainBackgroundColor}" 
+                 Text="Type your transcription here..."  />
+        
+        <StackPanel Orientation="Horizontal" x:Name="RecordingButtonContainer"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3">
+            
+            <!-- New Conversation Button -->
+            <Button x:Name="NewConversationButton" 
+                    Margin="10,10,10,10"
+                    Click="NewConversationButton_Click"
+                    Content="New Conversation"
+                    Background="{StaticResource MainButtonBackgroundColor}" 
+                    Foreground="{StaticResource MainButtonForegroundColor}" />
+            
+          <!-- save Conversation Button -->
+            <Button x:Name="SaveConversationButton" 
+                    Margin="10,10,10,10"
+                    Click="SaveConversationButton_Click"
+                    Content="Save Conversation"
+                    Background="{StaticResource MainButtonBackgroundColor}" 
+                    Foreground="{StaticResource MainButtonForegroundColor}" /> 
+            
+          <!-- load Conversation Button -->
+            <Button x:Name="LoadConversationButton" 
+                    Margin="10,10,10,10"
+                    Click="LoadButton_Click"
+                    Content="Load Conversation"
+                    Background="{StaticResource MainButtonBackgroundColor}" 
+                    Foreground="{StaticResource MainButtonForegroundColor}" />
+            
+            <!-- Start Recording Button -->
+            <Button x:Name="StartRecordingButton" Margin="10,10,10,10" 
+                    Grid.Row="0" Width="100" Height="30"
+                    Grid.Column="0"
+                
+                    HorizontalAlignment="Left" VerticalAlignment="Center" 
+                    Background="{StaticResource MainButtonBackgroundColor}" 
+                    Foreground="{StaticResource MainButtonForegroundColor}" 
+                    Content="Start Recording" 
+                    Click="StartRecordingButton_Click"/>
+
+            <!-- Stop Recording Button -->
+            <Button x:Name="StopRecordingButton" Margin="10" 
+                    Grid.Row="0" Grid.Column="0" Width="100" Height="30" 
+                    HorizontalAlignment="Left" VerticalAlignment="Center" 
+                    Background="{StaticResource MainButtonBackgroundColor}" 
+                    Foreground="{StaticResource MainButtonForegroundColor}" 
+                    Content="Stop Recording"
+                    Click="StopRecordingButton_Click"/>
+        </StackPanel>
+
+        <!-- Send to GPT Button -->
+        <Button x:Name="SendToGptButton" Margin="10" 
+        Grid.Row="2" Width="100" Height="30" 
+        HorizontalAlignment="Left" VerticalAlignment="Top" 
+        Background="{StaticResource MainButtonBackgroundColor}" 
+        Foreground="{StaticResource MainButtonForegroundColor}" 
+        Content="Send to GPT" 
+        Click="SendToGptButton_Click"/>
+
+
+        <!-- ConversationTextBox -->
+        <TextBox x:Name="ConversationTextBox" Margin="10" 
+                 Grid.Row="3" Width="780" Height="150" 
+                 HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                 Background="{StaticResource MainForegroundColor}" 
+                 Foreground="{StaticResource MainBackgroundColor}" 
+                 IsReadOnly="True" TextWrapping="Wrap" />
     </Grid>
 </Window>
