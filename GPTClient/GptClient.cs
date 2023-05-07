@@ -16,16 +16,15 @@ using OpenAI_API.Chat;
 using OpenAI_API.Models;
 using OpenAI_API.Completions;
 using System.Threading;
-using NAudio.CoreAudioApi;
 using Newtonsoft.Json;
 using System.IO;
 using OpenAI.Files;
 using System.Data;
-using System.Windows.Forms.VisualStyles;
+using ChatWithChatGpt.DataModel;
 
 namespace ChatWithChatGpt
 {
-    internal class GptClient
+    public class GptClient
     {
         private readonly OpenAIAPI _api;
         private Conversation _chat;

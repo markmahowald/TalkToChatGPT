@@ -16,16 +16,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Google.Apis.Auth.OAuth2;
-using Google.Cloud.Speech.V1;
-using Google.Cloud.TextToSpeech.V1;
-using Google.Protobuf;
-using NAudio.Wave;
 using Microsoft.Win32;
 using System.Windows.Forms;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using MessageBox = System.Windows.Forms.MessageBox;
+using ChatWithChatGpt.GoogleClient;
+using NAudio.Wave;
 
 namespace ChatWithChatGpt
 {

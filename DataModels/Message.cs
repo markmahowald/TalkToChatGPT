@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatWithChatGpt
+namespace ChatWithChatGpt.DataModel
 {
     public class Message
     {

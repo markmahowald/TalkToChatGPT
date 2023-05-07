@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChatWithChatGpt
+namespace ChatWithChatGpt.GoogleClient
 {
-    internal class TextToSpeechClient
+    public class TextToSpeechClient
     {
         public async Task<MemoryStream> ConvertTextToSpeech(string text)
         {

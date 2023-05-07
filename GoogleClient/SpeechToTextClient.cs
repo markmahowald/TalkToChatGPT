@@ -13,15 +13,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic.ApplicationServices;
 using static Google.Rpc.Context.AttributeContext.Types;
-using System.Windows.Forms;
 
-namespace ChatWithChatGpt
+namespace ChatWithChatGpt.GoogleClient
 {
-    internal class SpeechToTextClient
+    public class SpeechToTextClient
     {
-        internal string ConvertSpeechToText(MemoryStream audioStream)
+        public string ConvertSpeechToText(MemoryStream audioStream)
         {
             // Set your Google Cloud credentials JSON file path.
             string credentialsFilePath = Environment.GetEnvironmentVariable("GoogleTextToSpeechAndBackAgainServiceAccountCredientalPath");

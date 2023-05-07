@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Cloud.Speech.V1" Version="3.4.0" />
-    <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="3.2.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
-    <PackageReference Include="OpenAI" Version="1.7.2" />
-    <PackageReference Include="OpenAI-DotNet" Version="6.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataModels\DataModels.csproj" />
+    <ProjectReference Include="..\GoogleClient\GoogleClient.csproj" />
+    <ProjectReference Include="..\GPTClient\GPTClient.csproj" />
   </ItemGroup>
 
 </Project>
